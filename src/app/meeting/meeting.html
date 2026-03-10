@@ -1,0 +1,111 @@
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+                    <label for="tab-scheduling" style="cursor: pointer; padding: 4px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </label>
+                    <h1 style="margin: 0;">New event type</h1>
+                </div>
+
+                <div class="modal-container">
+                    <div class="headerr">
+                        <div class="type-selector">
+                            <button class="type-chip">Appointment</button>
+                            <button class="type-chip active">Meeting</button>
+                            <button class="type-chip">Event</button>
+                            <button class="type-chip">Tour</button>
+                        </div>
+                        <div class="share-toggle">
+                            <span>Share</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                            <span>Private</span>
+                           
+                        </div>
+                    </div>
+
+                    <form onsubmit="event.preventDefault()">
+                        <!-- Subject -->
+                        <div class="form-group">
+                            <div class="subject-row">
+                                <input type="text" placeholder="Add Subject *" required style="border-top: none; border-left: none; border-right: none; border-radius: 0;">
+                                <button class="icon-btn" title="AI Assistant">🤖</button>
+                                <button class="icon-btn" title="Palette">🎨</button>
+                            </div>
+                        </div>
+
+                        <!-- Date and Time -->
+                        <div class="form-group">
+                            <div class="date-time-grid">
+                                <input type="text" value="04-Mar-2026" readonly>
+                                <select>
+                                    <option>12:15 PM</option>
+                                    <option>12:30 PM</option>
+                                </select>
+                            </div>
+                            <div class="date-time-grid">
+                                <input type="text" value="04-Mar-2026" readonly>
+                                <select>
+                                    <option>12:30 PM</option>
+                                    <option>12:45 PM</option>
+                                </select>
+                            </div>
+                            <div class="checkbox-row">
+                                <input type="checkbox" id="custom-time">
+                                <label for="custom-time">Custom Time</label>
+                            </div>
+                        </div>
+
+                        <!-- Meeting Type and Venue -->
+                        <div class="date-time-grid">
+                            <div class="form-group">
+                                <label>Meeting type <span class="required">*</span></label>
+                                <select>
+                                    <option>Other (In Person)</option>
+                                    <option>Video Call</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Venue <span class="required">*</span></label>
+                                <input type="text" value="MeitY">
+                            </div>
+                        </div>
+
+                        <!-- Priority and Remarks -->
+                        <div class="date-time-grid">
+                            <div class="form-group">
+                                <label>Priority</label>
+                                <select>
+                                    <option>Top</option>
+                                    <option>Medium</option>
+                                    <option>Low</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <input type="text" placeholder="Please Enter Remarks">
+                            </div>
+                        </div>
+
+                        <!-- Participants -->
+                        <div class="form-group">
+                            <input type="text" placeholder="Search internal participant">
+                            <div class="checkbox-row">
+                                <input type="checkbox" id="all-mdos">
+                                <label for="all-mdos">All MDOs</label>
+                            </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="footer-actions">
+                            <button class="btnn btn-moree">More Options</button>
+                            <button class="btnn btn-draftt">SAVE DRAFT</button>
+                            <button class="btnn btn-savee">SAVE</button>
+                        </div>
+                    </form>
+                </div>
+
+

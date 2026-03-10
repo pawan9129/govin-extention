@@ -1,0 +1,146 @@
+
+
+
+  <div class="app-container">
+    <!-- Logic Radios -->
+    <input type="radio" name="main-nav" id="tab-meetings" />
+    <input type="radio" name="main-nav" id="tab-scheduling" checked />
+    <input type="radio" name="main-nav" id="tab-contacts" />
+    <input type="radio" name="main-nav" id="tab-create" />
+    <!-- Header -->
+    <header class="header">
+      <div class="row">
+        <div class="col-6">
+          <a href="#" class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" />
+              <path d="M12 6v6l4 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <img src="./assets/images/gov.in.png" style="width:130px" />
+          </a>
+        </div>
+        <div class="col-6 d-flex justify-content-end">
+          <label for="tab-create" class="btn-create-label">
+            <span>+</span> Create
+          </label>
+          <!-- &nbsp;&nbsp; -->
+          <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+        </div>
+      </div>
+    </header>
+    <!-- Pages Content -->
+    <main class="pages-wrapper">
+      <!-- MEETINGS PAGE -->
+      <section class="page" id="page-meetings">
+        <!-- <h1>Meetings</h1>
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <p>No upcoming meetings scheduled.</p>
+        </div> -->
+        <app-meeting></app-meeting>
+      </section>
+
+      <!-- SCHEDULING PAGE (Default) -->
+      <section class="page" id="page-scheduling">
+      <app-scheduling></app-scheduling>
+      </section>
+
+      <!-- CONTACTS PAGE -->
+      <section class="page" id="page-contacts">
+        <h1>Contacts</h1>
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <p>Your contact list is empty.</p>
+        </div>
+      </section>
+
+      <!-- CREATE NEW EVENT PAGE -->
+      <section class="page" id="page-create">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+          <label for="tab-scheduling" style="cursor: pointer; padding: 4px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </label>
+          <h1 style="margin: 0;">New event type</h1>
+        </div>
+
+        <div class="create-form">
+          <div class="form-group">
+            <label>Event Name</label>
+            <input type="text" placeholder="e.g. Quick Sync">
+          </div>
+          <div class="form-group">
+            <label>Duration</label>
+            <select>
+              <option>15 minutes</option>
+              <option selected>30 minutes</option>
+              <option>45 minutes</option>
+              <option>60 minutes</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Location</label>
+            <select>
+              <option>Google Meet</option>
+              <option>Zoom</option>
+              <option>Phone Call</option>
+              <option>In-person</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea rows="3" placeholder="What is this meeting about?"></textarea>
+          </div>
+          <button class="btn-submit">Create Event Type</button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <div class="nav-indicator"></div>
+
+      <label for="tab-meetings" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        Meetings
+      </label>
+
+      <label for="tab-scheduling" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+        </svg>
+        Scheduling
+      </label>
+
+      <label for="tab-contacts" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        Contacts
+      </label>
+    </nav>
+  </div>
+
+<!-- <router-outlet /> -->

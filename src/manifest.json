@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Gov Meeting Scheduler",
+  "version": "1.0.0",
+  "description": "Schedule meetings directly from extension",
+
+  "action": {
+    "default_title": "Gov Calendar"
+  },
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "index.html",
+        "assets/*",
+        "*.js",
+        "*.css"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
