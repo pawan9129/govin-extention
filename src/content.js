@@ -16,15 +16,42 @@ function toggleModal() {
     return;
   }
 
+//   overlay.innerHTML = `
+//   <div class="gov-overlay">
+//     <div class="gov-modal">
+//       <button id="gov-close" style="
+//         position:absolute;
+//         top:10px;
+//         right:10px;
+//         z-index:10;
+//         background:#ff4d4f;
+//         color:white;
+//         border:none;
+//         padding:6px 10px;
+//         border-radius:6px;
+//         cursor:pointer;
+//       ">X</button>
+
+//       <iframe src="${chrome.runtime.getURL("index.html")}" 
+//               style="width:100%; height:100%; border:none;">
+//       </iframe>
+//     </div>
+//   </div>
+// `;
+
+// setTimeout(() => {
+//   document.getElementById("gov-close").onclick = () => {
+//     document.getElementById("gov-modal").remove();
+//   };
+// }, 100);
+
   modal = document.createElement("div");
   modal.id = "gov-modal";
 
   modal.innerHTML = `
     <div class="gov-overlay">
       <div class="gov-modal">
-
         <div class="gov-header">
-          <span>Gov Meeting Scheduler</span>
           <button id="gov-close-btn">✕</button>
         </div>
 
@@ -44,6 +71,57 @@ function toggleModal() {
   });
 
   addStyles();
+const iframe = modal.querySelector(".gov-iframe");
+
+if (iframe) {
+
+  iframe.onload = () => {
+
+    setTimeout(() => {
+
+      const emailData = extractEmailData();
+
+      console.log("Extracted Email Data:", emailData);
+
+      iframe.contentWindow.postMessage({
+        type: "EMAIL_DATA",
+        data: emailData
+      }, "*");
+
+    }, 500);
+
+  };
+
+}
+}
+
+
+function extractEmailData() {
+
+  let subject = "";
+  let senderEmail = "";
+  let senderName = "";
+  let body = "";
+
+  const subjectEl = document.querySelector("h2.hP");
+  const senderEl = document.querySelector(".gD");
+  const bodyEl = document.querySelector(".a3s");
+
+  if (subjectEl) subject = subjectEl.innerText;
+
+  if (senderEl) {
+    senderEmail = senderEl.getAttribute("email") || "";
+    senderName = senderEl.getAttribute("name") || "";
+  }
+
+  if (bodyEl) body = bodyEl.innerText;
+  console
+  return {
+    subject,
+    senderEmail,
+    senderName,
+    body
+  };
 }
 
 function addStyles() {
@@ -77,12 +155,10 @@ function addStyles() {
   }
 
   .gov-header {
-    height: 50px;
-    background: #0d6efd;
-    color: white;
+    height: 30px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: end;
     padding: 0 15px;
     font-weight: 600;
   }

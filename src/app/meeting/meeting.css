@@ -138,13 +138,14 @@ textarea {
 }
 
 .btnn {
-    padding: 12px 24px;
+    padding: 10px 20px;
     border-radius: 25px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     border: none;
-    transition: opacity 0.2s;
+    transition: opacity .2s;
+    white-space: nowrap;
 }
 
 .btn-moree {
