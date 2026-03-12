@@ -24,6 +24,7 @@
               "src/manifest.json",
               "src/background.js",
               "src/content.js",
+              "src/content-script.js",
               {
                 "glob": "**/*",
                 "input": "public"
@@ -39,8 +40,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "2mb",
+                    "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",

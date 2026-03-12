@@ -1,6 +1,6 @@
 
 
-
+<div *ngIf="isLoggedIn; else loginPage">
   <div class="app-container">
     <!-- Logic Radios -->
     <input type="radio" name="main-nav" id="tab-meetings" />
@@ -132,5 +132,21 @@
       </label>
     </nav>
   </div>
+</div>
 
+<!-- <div *ngIf="isLoggedIn; else loginPage">
+  <app-meeting></app-meeting>
+  <app-scheduling></app-scheduling>
+  <button (click)="logout()">Logout</button>
+</div> -->
+
+<ng-template #loginPage>
+  <div style="text-align:center;margin-top:120px">
+    <img src="./assets/images/gov.in.png" style="width:200px">
+    <h2>Please Login</h2>
+    <button (click)="loginWithParichay()" class="btn btn-primary">
+      Login With Parichay
+    </button>
+  </div>
+</ng-template>
 <!-- <router-outlet /> -->

@@ -95,27 +95,34 @@ if (iframe) {
 }
 }
 
-
 function extractEmailData() {
 
   let subject = "";
   let senderEmail = "";
   let senderName = "";
   let body = "";
-
   const subjectEl = document.querySelector("h2.hP");
   const senderEl = document.querySelector(".gD");
   const bodyEl = document.querySelector(".a3s");
-
-  if (subjectEl) subject = subjectEl.innerText;
+  if (subjectEl) {
+    subject = subjectEl.innerText.trim();
+    subject = subject.replace("Invitation from an unknown sender:", "").trim();
+    if (subject.includes("@")) {
+      subject = subject.split("@")[0].trim();
+    }
+  }
 
   if (senderEl) {
     senderEmail = senderEl.getAttribute("email") || "";
     senderName = senderEl.getAttribute("name") || "";
   }
 
-  if (bodyEl) body = bodyEl.innerText;
-  console
+  if (bodyEl) {
+    body = bodyEl.innerText.trim();
+  }
+
+  console.log("Clean Subject:", subject);
+
   return {
     subject,
     senderEmail,
