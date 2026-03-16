@@ -1,11 +1,10 @@
-import { Component, signal, OnInit,ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common'; // ← MUST
+import { Component, signal, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Meeting } from './meeting/meeting';
 import { Scheduling } from './scheduling/scheduling';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../config/environment ';
 import { AuthService } from './core/interceptors/auth.interceptor';
-
 // import { Contact } from './contact/contact';
 // import { Meetingcreate } from './meetingcreate/meetingcreate';
 declare var chrome: any;
@@ -21,48 +20,47 @@ declare var chrome: any;
 export class App implements OnInit {
   protected readonly title = signal('govin-extention');
   isLoggedIn = false;
-  // constructor(private http: HttpClient) { }
   constructor(
     private authService: AuthService,
-    private cdr: ChangeDetectorRef // ← Important
-  ) {}
+    private cdr: ChangeDetectorRef
+  ) { }
+
   ngOnInit() {
     this.checkLogin();
-    this.getToken();
+    chrome.storage.onChanged.addListener((changes: any) => {
+      if (changes.gov_access_token) {
+        const token = changes.gov_access_token.newValue;
+        this.isLoggedIn = !!token;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
-  getToken() {
-  chrome.storage.local.get("gov_access_token", (result:any) => {
-    console.log("TOKEN =", result.gov_access_token);
-    console.log("TOKEN >>>>>>>>>=", result);
-  });
-}
-  // checkLogin() {
-  //   this.isLoggedIn = localStorage.getItem('loginWithParichay') === 'true';
-  // }
   checkLogin() {
-    chrome.storage.local.get(['parichayToken'], (result: any) => {
-      if (result.parichayToken) {
+    chrome.storage.local.get(['gov_access_token'], (result: any) => {
+      const token = result.gov_access_token;
+      console.log("CHECK TOKEN:", token);
+      if (token && token.length > 10) {
         this.isLoggedIn = true;
       } else {
         this.isLoggedIn = false;
       }
-      this.cdr.detectChanges(); 
+      this.cdr.detectChanges();
     });
+
   }
-    loginWithParichay() {
+
+  loginWithParichay() {
     try {
-      debugger
       this.authService.generateParichayUrl().subscribe({
         next: (res: any) => {
           if (res?.data) {
             const url = `https://parichay.nic.in/pnv1/assets/login?sid=${environment.loginWithParichay.serviceName}`;
-            // Open login in new tab
             window.open(url, '_blank');
           }
         },
         error: (err: any) => {
-          console.error('Parichay Login Error:', err);
+        console.error('Parichay Login Error:', err);
         },
       });
     } catch (err) {
@@ -95,10 +93,4 @@ export class App implements OnInit {
   //   }
   // }
 
-  logout() {
-    localStorage.removeItem('loginWithParichay');
-    localStorage.removeItem('loginWithJanParichay');
-    this.isLoggedIn = false;
-    window.location.reload();
-  }
 }

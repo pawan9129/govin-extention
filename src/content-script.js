@@ -1,69 +1,74 @@
-// content-script.ts
-// (() => {
-//   const originalFetch = window.fetch.bind(window);
-//   window.fetch = async function (
-//     input: RequestInfo | URL,
-//     init?: RequestInit
-//   ): Promise<Response> {
-//     const response = await originalFetch(input, init);
-//     const url = typeof input === 'string' ? input : input.toString();
-//     if (url.includes('/meityapis/auth/parichay_handshake')) {
-//       const cloned = response.clone();
-//       cloned.json()
-//         .then((data) => {
-//           if (data?.accessToken) {
-//             chrome.storage.local.set({ parichayToken: data.accessToken }, () => {
-//               console.log('✅ Parichay token stored in extension:', data.accessToken);
-//             });
-//           }
-//         })
-//         .catch(err => console.error('Failed to parse handshake response:', err));
-//     }
-//     return response;
-//   };
-// })();
 console.log("CONTENT SCRIPT LOADED");
-console.log("Interceptor Loaded");
-const originalFetch = window.fetch;
-window.fetch = async function (...args) {
-  debugger
-  const response = await originalFetch.apply(this, args);
-  const url = args[0].toString();
-  if (url.includes("parichay_handshake")) {
-    console.log("console1")
-    const clone = response.clone();
-    clone.json().then((data)=>{
-      console.log("FETCH RESPONSE:", data);
-      if(data?.data?.accessToken){
-          console.log("console 2")
-        chrome.runtime.sendMessage({
-          type:"PARICHAY_TOKEN",
-          token:data.data.accessToken
-        });
-      }
+function getTokenFromSession() {
+  console.log("Checking login session...");
+  const udetails = sessionStorage.getItem("Udetails");
+  if (!udetails) {
+    console.log("User not logged in");
+    chrome.runtime.sendMessage({
+      type: "PARICHAY_LOGOUT"
+    });
+    return;
+  }
+  try {
+    const parsed = JSON.parse(udetails);
+    const token = parsed?.accessToken;
+    if (token) {
+      console.log("TOKEN FOUND:", token);
+      chrome.runtime.sendMessage({
+        type: "PARICHAY_TOKEN",
+        token: token
+      });
+    } else {
+      chrome.runtime.sendMessage({
+        type: "PARICHAY_LOGOUT"
+      });
+    }
+  } catch (error) {
+    console.log("Error parsing Udetails", error);
+    chrome.runtime.sendMessage({
+      type: "PARICHAY_LOGOUT"
     });
   }
-  return response;
-};
+}
 
-const open = XMLHttpRequest.prototype.open;
-XMLHttpRequest.prototype.open = function () {
-  this.addEventListener("load", function () {
-    if (this.responseURL.includes("parichay_handshake")) {
-      try {
-          console.log("console 3")
-        const data = JSON.parse(this.responseText);
-        console.log("XHR RESPONSE:??>>>>", data);
-        if(data?.data?.accessToken){
-          chrome.runtime.sendMessage({
-            type:"PARICHAY_TOKEN",
-            token:data.data.accessToken
-          });
-        }
-      } catch(e){
-        console.log(e)
-      }
-    }
-  });
-  open.apply(this, arguments);
-};
+
+// let lastToken = null;
+// function getTokenFromSession() {
+//   const udetails = sessionStorage.getItem("Udetails");
+//   if (!udetails) {
+//     if (lastToken !== null) {
+//       chrome.runtime.sendMessage({
+//         type: "PARICHAY_LOGOUT"
+//       });
+//       lastToken = null;
+//     }
+//     return;
+//   }
+//   try {
+//     const parsed = JSON.parse(udetails);
+//     const token = parsed?.accessToken;
+//     if (token && token !== lastToken) {
+//       // console.log("TOKEN FOUND:", token);
+//       chrome.runtime.sendMessage({
+//         type: "PARICHAY_TOKEN",
+//         token: token
+//       });
+//       lastToken = token;
+//     }
+//   } catch (error) {
+//     console.log("Error parsing Udetails", error);
+//   }
+// }
+
+getTokenFromSession();
+setInterval(() => {
+  getTokenFromSession();
+  // console.log("Session run");
+}, 5000);
+
+// window.addEventListener("storage", function (event) {
+//   if (event.key === "Udetails") {
+//     console.log("Session storage changed");
+//     getTokenFromSession();
+//   }
+// });

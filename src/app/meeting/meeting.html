@@ -35,11 +35,11 @@
         <!-- Date and Time -->
         <div class="form-group">
             <div class="date-time-grid">
-                <input type="text" [(ngModel)]="meeting.startDate" name="startDate" >
-                <input type="time" [(ngModel)]="meeting.startTime" name="startTime" >
+                <input type="text" [(ngModel)]="meeting.startDate" name="startDate">
+                <input type="time" [(ngModel)]="meeting.startTime" name="startTime">
             </div>
             <div class="date-time-grid">
-                <input type="text" [(ngModel)]="meeting.endDate" name="endDate" >
+                <input type="text" [(ngModel)]="meeting.endDate" name="endDate">
                 <input type="time" [(ngModel)]="meeting.endTime" name="endTime">
             </div>
             <div class="checkbox-row">
@@ -77,8 +77,27 @@
         </div>
         <!-- Participants -->
         <div class="form-group">
-            <input type="text" placeholder="Search internal participant" [(ngModel)]="meeting.participant"
-                name="participant">
+            <!-- <input type="text" placeholder="Search internal participant" [(ngModel)]="meeting.participant"
+                name="participant"> -->
+            <!-- <div class="autocomplete-container">
+                <input type="text" placeholder="Search internal participant" [(ngModel)]="meeting.participant"
+                    name="participant" (input)="searchParticipant()" autocomplete="off" />
+                <ul *ngIf="participants.length > 0" class="autocomplete-list">
+                    <li *ngFor="let p of participants" (click)="selectParticipant(p)">
+                        {{p.name}} - {{p.designation}} ({{p.ministry}})
+                    </li>
+                </ul>
+            </div> -->
+            <div class="autocomplete-container">
+                <input type="text" placeholder="Search internal participant" [(ngModel)]="meeting.participant"
+                    name="participant" (input)="searchParticipant()" autocomplete="off" />
+
+                <ul *ngIf="participants.length > 0" class="autocomplete-list">
+                    <li *ngFor="let p of participants" (mousedown)="selectParticipant(p)">
+                        {{p.name}} - {{p.designation}} ({{p.ministry}})
+                    </li>
+                </ul>
+            </div>
             <div class="checkbox-row">
                 <input type="checkbox" id="all-mdos" [(ngModel)]="meeting.allMdos" name="allMdos">
                 <label for="all-mdos">All MDOs</label>
