@@ -174,34 +174,32 @@
 //   document.head.appendChild(style);
 // }
 
-// //   overlay.innerHTML = `
-// //   <div class="gov-overlay">
-// //     <div class="gov-modal">
-// //       <button id="gov-close" style="
-// //         position:absolute;
-// //         top:10px;
-// //         right:10px;
-// //         z-index:10;
-// //         background:#ff4d4f;
-// //         color:white;
-// //         border:none;
-// //         padding:6px 10px;
-// //         border-radius:6px;
-// //         cursor:pointer;
-// //       ">X</button>
-
-// //       <iframe src="${chrome.runtime.getURL("index.html")}"
-// //               style="width:100%; height:100%; border:none;">
-// //       </iframe>
-// //     </div>
-// //   </div>
-// // `;
-
-// // setTimeout(() => {
-// //   document.getElementById("gov-close").onclick = () => {
-// //     document.getElementById("gov-modal").remove();
-// //   };
-// // }, 100);
+//   overlay.innerHTML = `
+//   <div class="gov-overlay">
+//     <div class="gov-modal">
+//       <button id="gov-close" style="
+//         position:absolute;
+//         top:10px;
+//         right:10px;
+//         z-index:10;
+//         background:#ff4d4f;
+//         color:white;
+//         border:none;
+//         padding:6px 10px;
+//         border-radius:6px;
+//         cursor:pointer;
+//       ">X</button>
+//       <iframe src="${chrome.runtime.getURL("index.html")}"
+//               style="width:100%; height:100%; border:none;">
+//       </iframe>
+//     </div>
+//   </div>
+// `;
+// setTimeout(() => {
+//   document.getElementById("gov-close").onclick = () => {
+//     document.getElementById("gov-modal").remove();
+//   };
+// }, 100);
 
 
 console.log("Gov Extension Content Loaded");
@@ -246,28 +244,7 @@ function toggleModal() {
     modal.remove();
     modal = null;
   });
-
   addStyles();
-
-  // const iframe = modal.querySelector(".gov-iframe");
-
-  // if (iframe) {
-
-  //   iframe.onload = () => {
-
-  //     const emailData = extractEmailData();
-
-  //     console.log("Extracted Email Data:", emailData);
-
-  //     // send data to angular iframe
-  //     iframe.contentWindow.postMessage({
-  //       type: "EMAIL_DATA",
-  //       data: emailData
-  //     }, "*");
-
-  //   };
-
-  // }
   const iframe = modal.querySelector(".gov-iframe");
   if (iframe) {
     const emailData = extractEmailData();

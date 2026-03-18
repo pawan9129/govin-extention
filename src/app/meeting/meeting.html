@@ -50,9 +50,9 @@
         <div class="date-time-grid">
             <div class="form-group">
                 <label>Meeting type <span class="required">*</span></label>
-                <select [(ngModel)]="meeting.meetingType" name="meetingType">
-                    <option>Other (In Person)</option>
-                    <option>Video Call</option>
+                <select name="meetingType" [(ngModel)]="meeting.meetingType" (change)="onMeetingTypeChange()">
+                    <option value="virtual">Virtual</option>
+                    <option value="other">Other (In Person)</option>
                 </select>
             </div>
             <div class="form-group">
@@ -60,7 +60,29 @@
                 <input type="text" [(ngModel)]="meeting.venue" name="venue">
             </div>
         </div>
-        <!-- Priority and Remarks -->
+        <div *ngIf="meeting.meetingType === 'virtual'">
+            <div class="form-group">
+                <label>Meeting Platform <span class="required">*</span></label>
+                <select [(ngModel)]="meeting.meetingPlatform" name="meetingPlatform" (change)="onPlatformChange($event)" required>
+                    <option value="" disabled selected>Meeting Platform</option>
+                    <option *ngFor="let v of venues" [value]="v.id">
+                        {{ v.venue_name }}
+                    </option>
+                </select>
+            </div>
+            <!-- Meeting Link -->
+            <div class="form-group">
+                <label>Meeting Link</label>
+                <input type="text" placeholder="Enter meeting link" [(ngModel)]="meeting.meetingLink"
+                    name="meetingLink">
+            </div>
+            <!-- Password -->
+            <div class="form-group">
+                <label>Password</label>
+                <input type="text" placeholder="Enter password" [(ngModel)]="meeting.meetingPassword"
+                    name="meetingPassword">
+            </div>
+        </div>
         <div class="date-time-grid">
             <div class="form-group">
                 <label>Priority</label>

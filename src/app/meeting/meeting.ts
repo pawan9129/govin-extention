@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+
 
 declare var chrome: any;
 
@@ -23,14 +24,18 @@ export class Meeting implements OnInit {
     startTime: '',
     endDate: '',
     endTime: '',
-    meetingType: 'Other (In Person)',
+    meetingType: 'other',
+    meetingPlatform: '',
+    meetingLink: '',
+    meetingPassword: '',
     venue: 'Google Meet',
     priority: 'Medium',
     remarks: '',
     participant: '',
     share: true,
     customTime: false,
-    allMdos: false
+    allMdos: false,
+
   };
 
   ngOnInit() {
@@ -39,17 +44,31 @@ export class Meeting implements OnInit {
     }, "*");
 
     window.addEventListener('message', (event: any) => {
+
       if (event.data?.type === 'EMAIL_DATA') {
         const data = event?.data?.data;
         console.log("Email Data Received:", data);
         this.zone.run(() => {
-          this.meeting.subject = data?.subject || '';
+          this.meeting.subject = this.extractCleanSubject(data?.subject);
           this.meeting.remarks = data?.body || '';
           this.meeting.participant = data?.senderEmail || '';
+
           this.parseDateTime(data?.body || '');
         });
       }
     });
+  }
+  extractCleanSubject(subject: string): string {
+    if (!subject) return '';
+    let cleaned = subject;
+    if (cleaned.includes(':')) {
+      cleaned = cleaned.split(':').slice(1).join(':');
+    }
+    if (cleaned.includes('@')) {
+      cleaned = cleaned.split('@')[0];
+    }
+    cleaned = cleaned.replace(/\(.*?\)/g, '');
+    return cleaned.trim();
   }
 
   // ngOnInit() {
@@ -74,8 +93,8 @@ export class Meeting implements OnInit {
       const date = match[1];
       const startTime = match[2];
       const endTime = match[3];
-      this.meeting.startDate = date;
-      this.meeting.endDate = date;
+      this.meeting.startDate = this.payloadformatDate(date);
+      this.meeting.endDate = this.payloadformatDate(date);
       this.meeting.startTime = this.convertTo24Hour(startTime);
       this.meeting.endTime = this.convertTo24Hour(endTime);
     }
@@ -93,9 +112,14 @@ export class Meeting implements OnInit {
     return `${hours.padStart(2, "0")}:${minutes}`;
   }
 
-  formatDate(dateStr: string) {
-    const date = new Date(dateStr);
-    return date.toISOString().split("T")[0];
+
+  payloadformatDate(date: any): string {
+    if (!date) return '';
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   getPriorityValue() {
@@ -114,8 +138,8 @@ export class Meeting implements OnInit {
       formData.append("category_id", "359");
       formData.append("baRule", "49");
       formData.append("subject", this.meeting.subject);
-      formData.append("meetingStartDate", this.formatDate(this.meeting.startDate));
-      formData.append("meetingEndDate", this.formatDate(this.meeting.endDate));
+      formData.append("meetingStartDate", this.payloadformatDate(this.meeting.startDate));
+      formData.append("meetingEndDate", this.payloadformatDate(this.meeting.endDate));
       formData.append("for_parent", "false");
       formData.append("color", "#80C380");
       formData.append("startTime", this.meeting.startTime + ":00");
@@ -173,7 +197,6 @@ export class Meeting implements OnInit {
       if (this.selectedParticipant && this.meeting.participant === this.selectedParticipant.name) {
         return;
       }
-
       chrome.storage.local.get("gov_access_token", (result: any) => {
         const body = {
           page: 1,
@@ -203,6 +226,137 @@ export class Meeting implements OnInit {
     }, 300);
   }
 
-  // Next Fn();
+  venues: any[] = [];
+  onMeetingTypeChange() {
+    if (this.meeting.meetingType === 'virtual') {
+      this.getVenues();
+    } else {
+      this.venues = [];
+    }
+  }
 
+  async getVenues() {
+    chrome.storage.local.get("gov_access_token", (result: any) => {
+      const token = result.gov_access_token;
+      const timestamp = Date.now().toString();
+      const signature = "s+BUfbOsPzNZuUum0UJzgPzk1iMrot7vHHQHsnSt2n8=";
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'signature': signature,
+        'timestamp': timestamp
+      });
+      let params = new HttpParams()
+        .set('filter[_and][0][ministry_id][_null]', 'true')
+        .set('filter[_and][1][department_id][_null]', 'true')
+        .set('filter[venue_name][_neq]', 'Webex-1')
+        .set('filter[venue_type][_eq]', 'Virtual')
+        .set('filter[venue_status][_eq]', 'published')
+        .set('sort', 'venue_name');
+      const url = `https://govintranet.gov.in/meityapis/items/tran_meeting_venue`;
+      this.http.get<any>(url, { headers, params }).subscribe({
+        next: (res) => {
+          console.log("API Response:", res);
+          this.venues = res?.data || [];
+        },
+        error: (err) => {
+          console.error("API Error:", err);
+        }
+      });
+    });
+  }
+  //
+  onPlatformChange(event: any) {
+    const selectedId = event.target.value;
+    const selectedPlatform = this.venues.find(v => v.id == selectedId);
+    if (!selectedPlatform) return;
+    this.generateMeetingLink(selectedPlatform);
+  }
+
+  payloadformatTime(time: string): string {
+    if (!time) return '';
+    if (time.split(':').length === 3) return time;
+    return `${time}:00`;
+  }
+  generateMeetingLink(platform: any) {
+    chrome.storage.local.get("gov_access_token", (result: any) => {
+      const token = result.gov_access_token;
+      if (!token) {
+        console.error("Token missing");
+        return;
+      }
+
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'signature': 'x14eGrqLykxGDAyPNlPPoO3D4JANnWsJgBAiVIq2QHM=',
+        'timestamp': Date.now().toString()
+      });
+
+      // const body = {
+      //   "platformDetails": {
+      //     "platformId": Number(platform.id),
+      //     "platformName": platform.venue_name
+      //   },
+      //   "platformSpecific": {},
+      //   "meetingSubject": this.meeting.subject,
+      //   "meetingFrequency": "1",
+      //   "meetingStartDate": "2026-03-18",
+      //   "meetingStartTime": "15:30:00",
+      //   "meetingEndDate": "2026-03-18",
+      //   "meetingEndTime": "15:45:00",
+      //   "timeZoneId": "Asia/Kolkata",
+      //   "isLobbyMode": false,
+      //   "autoStartRecord": false,
+      //   "meetingGuests": []
+      // }
+
+      // const body = {
+      //   platformDetails: {
+      //     platformId: Number(platform.id),
+      //     platformName: platform.venue_name
+      //   },
+      //   platformSpecific: {},
+      //   meetingSubject: this.meeting.subject,
+      //   meetingFrequency: "1",
+      //   meetingStartDate: this.payloadformatDate(this.meeting.startDate),
+      //   meetingStartTime: this.payloadformatTime(this.meeting.startTime),
+      //   meetingEndDate: this.payloadformatDate(this.meeting.endDate),
+      //   meetingEndTime: this.payloadformatTime(this.meeting.endTime),
+      //   timeZoneId: "Asia/Kolkata",
+      //   isLobbyMode: false,
+      //   autoStartRecord: false,
+      //   meetingGuests: []
+      // };
+      const body = {
+        platformDetails: {
+          platformId: Number(platform?.id || platform?.venue_id || 1),
+          platformName: platform?.venue_name || platform?.name || "BharatVC"
+        },
+        platformSpecific: {},
+        meetingSubject: this.meeting.subject || "Test Meeting",
+        meetingFrequency: "1",
+        meetingStartDate: this.payloadformatDate(this.meeting.startDate),
+        meetingStartTime: this.payloadformatTime(this.meeting.startTime),
+        meetingEndDate: this.payloadformatDate(this.meeting.endDate),
+        meetingEndTime: this.payloadformatTime(this.meeting.endTime),
+        timeZoneId: "Asia/Kolkata",
+        isLobbyMode: false,
+        autoStartRecord: false,
+        meetingGuests: []
+      };
+      console.log("FINAL BODY:", body);
+      this.http.post<any>('https://govintranet.gov.in/meityapis/calendar/generate-meeting-platform-link', body, { headers }).subscribe({
+        next: (res) => {
+          console.log("API SUCCESS:", res);
+          const data = res?.data?.common || {};
+          this.meeting.meetingLink = data?.meetingUrl || '';
+          this.meeting.meetingPassword = data?.meetingPassword || '';
+        },
+        error: (err) => {
+          console.error("API ERROR FULL:", err);
+        }
+      });
+
+    });
+  }
 }
