@@ -1,8 +1,4 @@
-
-// console.log("Gov Extension Content Loaded");
-
 // let modal = null;
-
 // chrome.runtime.onMessage.addListener((request) => {
 //   if (request.action === "TOGGLE_MODAL") {
 //     toggleModal();
@@ -10,67 +6,49 @@
 // });
 
 // function toggleModal() {
-
 //   if (modal) {
 //     modal.remove();
 //     modal = null;
 //     return;
 //   }
 
-
-
 //   modal = document.createElement("div");
 //   modal.id = "gov-modal";
-
 //   modal.innerHTML = `
 //     <div class="gov-overlay">
 //       <div class="gov-modal">
 //         <div class="gov-header">
 //           <button id="gov-close-btn">✕</button>
 //         </div>
-
 //         <iframe src="${chrome.runtime.getURL("index.html")}" 
 //                 class="gov-iframe">
 //         </iframe>
-
 //       </div>
 //     </div>
 //   `;
 
 //   document.body.appendChild(modal);
-
 //   document.getElementById("gov-close-btn").addEventListener("click", () => {
 //     modal.remove();
 //     modal = null;
 //   });
-
 //   addStyles();
 //   const iframe = modal.querySelector(".gov-iframe");
-
 //   if (iframe) {
-
 //     iframe.onload = () => {
-
 //       setTimeout(() => {
-
 //         const emailData = extractEmailData();
-
 //         console.log("Extracted Email Data:", emailData);
-
 //         iframe.contentWindow.postMessage({
 //           type: "EMAIL_DATA",
 //           data: emailData
 //         }, "*");
-
 //       }, 500);
-
 //     };
-
 //   }
 // }
 
 // function extractEmailData() {
-
 //   let subject = "";
 //   let senderEmail = "";
 //   let senderName = "";
@@ -85,18 +63,14 @@
 //       subject = subject.split("@")[0].trim();
 //     }
 //   }
-
 //   if (senderEl) {
 //     senderEmail = senderEl.getAttribute("email") || "";
 //     senderName = senderEl.getAttribute("name") || "";
 //   }
-
 //   if (bodyEl) {
 //     body = bodyEl.innerText.trim();
 //   }
-
 //   console.log("Clean Subject:", subject);
-
 //   return {
 //     subject,
 //     senderEmail,
@@ -106,12 +80,9 @@
 // }
 
 // function addStyles() {
-
 //   if (document.getElementById("gov-styles")) return;
-
 //   const style = document.createElement("style");
 //   style.id = "gov-styles";
-
 //   style.innerHTML = `
 //   .gov-overlay {
 //     position: fixed;
@@ -124,7 +95,6 @@
 //     justify-content: flex-end;
 //     z-index: 999999;
 //   }
-
 //   .gov-modal {
 //     width: 420px;
 //     height: 80vh;
@@ -134,7 +104,6 @@
 //     box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
 //     animation: slideIn 0.3s ease-in-out;
 //   }
-
 //   .gov-header {
 //     height: 30px;
 //     display: flex;
@@ -143,7 +112,6 @@
 //     padding: 0 15px;
 //     font-weight: 600;
 //   }
-
 //   #gov-close-btn {
 //     background: white;
 //     border: none;
@@ -153,27 +121,22 @@
 //     cursor: pointer;
 //     font-weight: bold;
 //   }
-
 //   #gov-close-btn:hover {
 //     background: red;
 //     color: white;
 //   }
-
 //   .gov-iframe {
 //     flex: 1;
 //     width: 100%;
 //     border: none;
 //   }
-
 //   @keyframes slideIn {
 //     from { transform: translateX(100%); }
 //     to { transform: translateX(0); }
 //   }
 //   `;
-
 //   document.head.appendChild(style);
 // }
-
 //   overlay.innerHTML = `
 //   <div class="gov-overlay">
 //     <div class="gov-modal">
@@ -201,11 +164,7 @@
 //   };
 // }, 100);
 
-
-console.log("Gov Extension Content Loaded");
-
 let modal = null;
-
 chrome.runtime.onMessage.addListener((request) => {
   if (request.action === "TOGGLE_MODAL") {
     toggleModal();
@@ -213,7 +172,6 @@ chrome.runtime.onMessage.addListener((request) => {
 });
 
 function toggleModal() {
-
   if (modal) {
     modal.remove();
     modal = null;
@@ -222,24 +180,20 @@ function toggleModal() {
 
   modal = document.createElement("div");
   modal.id = "gov-modal";
-
   modal.innerHTML = `
     <div class="gov-overlay">
       <div class="gov-modal">
         <div class="gov-header">
           <button id="gov-close-btn">✕</button>
         </div>
-
         <iframe src="${chrome.runtime.getURL("index.html")}" 
                 class="gov-iframe">
         </iframe>
-
       </div>
     </div>
   `;
 
   document.body.appendChild(modal);
-
   document.getElementById("gov-close-btn").addEventListener("click", () => {
     modal.remove();
     modal = null;
@@ -261,7 +215,6 @@ function toggleModal() {
 }
 
 function extractEmailData() {
-
   let subject = "";
   let senderEmail = "";
   let senderName = "";
@@ -270,20 +223,16 @@ function extractEmailData() {
   const subjectEl = document.querySelector("h2.hP");
   const senderEl = document.querySelector(".gD");
   const bodyEl = document.querySelector(".a3s");
-
   if (subjectEl) {
     subject = subjectEl.innerText.trim();
   }
-
   if (senderEl) {
     senderEmail = senderEl.getAttribute("email") || "";
     senderName = senderEl.getAttribute("name") || "";
   }
-
   if (bodyEl) {
     body = bodyEl.innerText.trim();
   }
-
   return {
     subject,
     senderEmail,
@@ -293,13 +242,9 @@ function extractEmailData() {
 }
 
 function addStyles() {
-
   if (document.getElementById("gov-styles")) return;
-
   const style = document.createElement("style");
-
   style.id = "gov-styles";
-
   style.innerHTML = `
   .gov-overlay {
     position: fixed;
@@ -312,7 +257,6 @@ function addStyles() {
     justify-content: flex-end;
     z-index: 999999;
   }
-
   .gov-modal {
     width: 420px;
     height: 80vh;
@@ -343,7 +287,6 @@ function addStyles() {
     border: none;
   }
   `;
-
   document.head.appendChild(style);
 
 }

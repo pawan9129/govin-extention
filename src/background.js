@@ -17,8 +17,8 @@ chrome.runtime.onMessage.addListener((message) => {
       gov_access_token: message.token
     });
   }
-  if (message.type === "PARICHAY_LOGOUT") {
-    console.log("USER LOGGED OUT");
-    chrome.storage.local.remove("gov_access_token");
-  }
+  // if (message.type === "PARICHAY_LOGOUT") {
+  //   console.log("USER LOGGED OUT");
+  //   chrome.storage.local.remove("gov_access_token");
+  // }
 });

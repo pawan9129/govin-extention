@@ -30,20 +30,14 @@ export class Scheduling implements OnInit {
   loadTokenAndMeetings() {
 
     chrome.storage.local.get("gov_access_token", (result: any) => {
-
       this.TOKEN = result.gov_access_token;
-
       console.log("TOKEN:", this.TOKEN);
-
       if (!this.TOKEN) {
         this.error = "User not logged in";
         return;
       }
-
       this.getScheduledMeetings();
-
     });
-
   }
 
   async getScheduledMeetings() {
@@ -77,7 +71,6 @@ const endDate = formatDate(today);
         }
       ]
     };
-
   try {
   const response = await fetch(
     "https://govintranet.gov.in/meityapis/calendar/meeting_list",

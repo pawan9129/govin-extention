@@ -1,9 +1,8 @@
-
 .modal-container {
-  
-    width:100%;
+
+    width: 100%;
     border-radius: 20px;
-    padding:0px;
+    padding: 0px;
     position: relative;
 }
 
@@ -24,7 +23,7 @@
 .type-selector {
     display: flex;
     gap: 8px;
-        margin-bottom: 10px;
+    margin-bottom: 10px;
 
 }
 
@@ -38,11 +37,11 @@
     border: none;
 }
 
-    .type-chip.active {
-        background: #eef2ff;
-        color: #0056b3;
-        font-weight: 600;
-    }
+.type-chip.active {
+    background: #eef2ff;
+    color: #0056b3;
+    font-weight: 600;
+}
 
 .share-toggle {
     display: flex;
@@ -90,9 +89,10 @@ textarea {
     transition: border-color 0.2s;
 }
 
-    input:focus, select:focus {
-        border-color: #0056b3;
-    }
+input:focus,
+select:focus {
+    border-color: #0056b3;
+}
 
 .subject-row {
     display: flex;
@@ -155,7 +155,7 @@ textarea {
 }
 
 .btn-draftt {
-    background:#707b85;
+    background: #707b85;
     color: white;
 }
 
@@ -184,11 +184,11 @@ textarea {
     height: 20px;
 }
 
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
 
 .slider {
     position: absolute;
@@ -202,25 +202,25 @@ textarea {
     border-radius: 20px;
 }
 
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 14px;
-        width: 14px;
-        left: 3px;
-        bottom: 3px;
-        background-color: white;
-        transition: .4s;
-        border-radius: 50%;
-    }
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
 
-input:checked + .slider {
+input:checked+.slider {
     background-color: #707b85;
 }
 
-    input:checked + .slider:before {
-        transform: translateX(20px);
-    }
+input:checked+.slider:before {
+    transform: translateX(20px);
+}
 
 /* SVG Icons Simulation */
 .icon {
@@ -228,32 +228,67 @@ input:checked + .slider {
     height: 18px;
     fill: #666666;
 }
+
 /*Autocomplet css  */
-.autocomplete-container{
-  position: relative;
-  width: 100%;
+.autocomplete-container {
+    position: relative;
 }
 
-.autocomplete-list{
-  position: absolute;
-  top: 40px;
-  left: 0;
-  right: 0;
-  background: white;
-  border: 1px solid #ccc;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 999999;
+/* input box */
+.input-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 5px;
+    min-height: 40px;
+    cursor: text;
 }
 
-.autocomplete-list li{
-  padding: 10px;
-  cursor: pointer;
+/* input */
+.input-wrapper input {
+    border: none;
+    outline: none;
+    flex: 1;
+    min-width: 120px;
 }
 
-.autocomplete-list li:hover{
-  background:#f3f3f3;
+/* chips */
+.chip {
+    background: #004085;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin: 2px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+}
+
+.remove {
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+/* dropdown */
+.autocomplete-list {
+    position: absolute;
+    width: 100%;
+    background: white;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 999;
+    list-style-type: none;
+    scrollbar-width: none;
+    overflow-y: scroll;
+}
+
+.autocomplete-list li {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.autocomplete-list li:hover {
+    background: #f1f1f1;
 }
