@@ -2,18 +2,41 @@ console.log("CONTENT SCRIPT LOADED");
 
 let lastToken = null;
 let failCount = 0;
-const MAX_FAIL = 3;
+const MAX_FAIL = 6;
+let logoutSent = false;
+let checkTimeout = null;
+
+function isTokenExpired(token) {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const exp = payload.exp; // seconds
+    const now = Math.floor(Date.now() / 1000);
+
+    return exp < now;
+  } catch (e) {
+    console.log("Invalid token");
+    return true;
+  }
+}
+
+function scheduleCheck(delay = 500) {
+  if (checkTimeout) clearTimeout(checkTimeout);
+
+  checkTimeout = setTimeout(() => {
+    getTokenFromSession();
+  }, delay);
+}
+
 
 function getTokenFromSession() {
   try {
     const udetails = sessionStorage.getItem("Udetails");
-
     if (!udetails) {
       failCount++;
-      console.log("Udetails not found, failCount:", failCount);
-
-      if (failCount >= MAX_FAIL) {
-        console.log("User probably logged out");
+      // console.log("⏳ Waiting session...", failCount);
+      if (failCount >= MAX_FAIL && !logoutSent) {
+        console.log("🚪 Confirm logout (session missing)");
+        logoutSent = true;
         chrome.runtime.sendMessage({
           type: "PARICHAY_LOGOUT"
         });
@@ -23,12 +46,24 @@ function getTokenFromSession() {
     }
 
     failCount = 0;
+    logoutSent = false;
     const parsed = JSON.parse(udetails);
     const token = parsed?.accessToken;
     if (!token) return;
+    if (isTokenExpired(token)) {
+      console.log("❌ Token expired → logout");
+      if (!logoutSent) {
+        logoutSent = true;
+        chrome.runtime.sendMessage({
+          type: "PARICHAY_LOGOUT"
+        });
+      }
+      return;
+    }
+
     if (token !== lastToken) {
       lastToken = token;
-      console.log("✅ TOKEN FOUND:", token);
+      console.log("✅ LOGIN DETECTED");
       chrome.runtime.sendMessage({
         type: "PARICHAY_TOKEN",
         token: token
@@ -38,34 +73,23 @@ function getTokenFromSession() {
     console.log("Error parsing session", error);
   }
 }
-
-
-setTimeout(getTokenFromSession, 1000);
+window.addEventListener("load", () => {
+  scheduleCheck(1500);
+});
 
 window.addEventListener("focus", () => {
-  console.log("Tab focused → checking token");
-  getTokenFromSession();
+  scheduleCheck(500);
 });
-
-document.addEventListener("click", () => {
-  getTokenFromSession();
-});
-
-setInterval(() => {
-  getTokenFromSession();
-}, 15000); // every 15 sec (safe)
-
-
 
 window.addEventListener("storage", (event) => {
   if (event.key === "Udetails") {
-    console.log("Session storage changed");
-    getTokenFromSession();
+    scheduleCheck(300);
   }
 });
 
-
-
+setInterval(() => {
+  scheduleCheck(1000);
+}, 8000);
 
 // console.log("CONTENT SCRIPT LOADED");
 // function getTokenFromSession() {

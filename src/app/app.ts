@@ -75,7 +75,6 @@ export class App implements OnInit {
   //   try {
   //      this.authService.generateParichayUrl().subscribe({
   //     next: (res: any) => {
-  //       debugger
   //       console.log("Respo>>>>",res)
   //       if (res?.data) {
   //         const url = `https://parichay.nic.in/pnv1/api/login?service=${environment.loginWithParichay.serviceName}&tid=${res?.data?.tsp}&cs=${res?.data?.hmacres?.data?.signature}&string=${res?.data?.encValue}`;

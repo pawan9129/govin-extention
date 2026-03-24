@@ -63,13 +63,12 @@ export class Meeting implements OnInit {
         });
       }
     });
-     this.generateTimeSlots();
+    this.generateTimeSlots();
 
-  if (this.timeSlots.length >= 2) {
-    debugger
-    this.meeting.startTime = this.timeSlots[0]; // 1st
-    this.meeting.endTime = this.timeSlots[1];   // 2nd
-  }
+    if (this.timeSlots.length >= 2) {
+      this.meeting.startTime = this.timeSlots[0]; // 1st
+      this.meeting.endTime = this.timeSlots[1];   // 2nd
+    }
   }
 
   extractCleanSubject(subject: string): string {
@@ -109,7 +108,7 @@ export class Meeting implements OnInit {
       const currentTime = `${hours}:${minutes}`;
       this.meeting.startDate = currentDate;
       this.meeting.endDate = currentDate;
-      this.meeting.startTime = currentTime; 
+      this.meeting.startTime = currentTime;
       this.meeting.endTime = currentTime;
     }
   }
@@ -275,7 +274,7 @@ export class Meeting implements OnInit {
   //     });
   //   });
   // }
-  
+
   //new
   searchTimer: any;
   selectedParticipants: any[] = [];
@@ -292,7 +291,7 @@ export class Meeting implements OnInit {
     this.participants = [];
     this.showDropdown = false;
     this.meeting.participant = this.selectedParticipants.map(x => x.id);
-console.log("selectedParticipants>>>",this.selectedParticipants)
+    console.log("selectedParticipants>>>", this.selectedParticipants)
   }
 
   @HostListener('document:click', ['$event'])
@@ -367,11 +366,8 @@ console.log("selectedParticipants>>>",this.selectedParticipants)
 
   //           this.showDropdown = true;
   //         }
-
   //       });
-
   //     });
-
   //   }, 400);
   // }
 
@@ -498,13 +494,11 @@ console.log("selectedParticipants>>>",this.selectedParticipants)
         autoStartRecord: false,
         meetingGuests: []
       };
-      console.log("FINAL BODY:", body);
+
       this.http.post<any>('https://govintranet.gov.in/meityapis/calendar/generate-meeting-platform-link', body, { headers }).subscribe({
         next: (res) => {
           console.log("API SUCCESS:", res);
           const data = res?.data?.common || {};
-          // this.meeting.meetingLink = data?.meetingUrl || '';
-          // this.meeting.meetingPassword = data?.meetingPassword || '';
           this.zone.run(() => {
             this.meeting.meetingLink = data?.meetingUrl || '';
             this.meeting.meetingPassword = data?.meetingPassword || '';
@@ -515,13 +509,11 @@ console.log("selectedParticipants>>>",this.selectedParticipants)
           console.error("API ERROR FULL:", err);
         }
       });
-
     });
   }
 
   timeSlots: string[] = [];
   generateTimeSlots() {
-    debugger
     this.timeSlots = [];
     const now = new Date();
     const minutes = now.getMinutes();
@@ -565,12 +557,12 @@ console.log("selectedParticipants>>>",this.selectedParticipants)
     return `${hours.toString().padStart(2, '0')}:${minutes}:00`;
   }
 
-onStartTimeChange() {
-  const index = this.timeSlots.indexOf(this.meeting.startTime);
-  if (index !== -1 && this.timeSlots[index + 1]) {
-    this.meeting.endTime = this.timeSlots[index + 1];
+  onStartTimeChange() {
+    const index = this.timeSlots.indexOf(this.meeting.startTime);
+    if (index !== -1 && this.timeSlots[index + 1]) {
+      this.meeting.endTime = this.timeSlots[index + 1];
+    }
   }
-}
 
   onEndTimeChange() {
     if (!this.meeting.customTime) {
